@@ -1,149 +1,214 @@
 {
   "configuration" : { },
-  "description" : "Architecture for a file storage system similar to Google Drive",
+  "description" : "Description",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedAgent" : "structurizr-ui",
-  "lastModifiedDate" : "2025-03-13T10:03:31Z",
+  "lastModifiedDate" : "2025-03-13T10:26:48Z",
   "model" : {
     "people" : [ {
-      "description" : "System user who uploads and manages files",
+      "description" : "Загружает, удаляет, ищет файлы и управляет папками",
       "id" : "1",
       "location" : "Unspecified",
-      "name" : "User",
+      "name" : "Пользователь",
       "properties" : {
         "structurizr.dsl.identifier" : "user"
       },
       "relationships" : [ {
-        "description" : "Creates an account, manages files and folders",
-        "destinationId" : "4",
-        "id" : "8",
+        "description" : "Использует веб/мобильный интерфейс для работы с файлами и папками",
+        "destinationId" : "2",
+        "id" : "17",
         "sourceId" : "1",
-        "tags" : "Relationship"
+        "tags" : "Relationship",
+        "technology" : "REST/HTTPS"
       }, {
-        "description" : "Creates an account, manages files and folders",
+        "description" : "Создаёт или ищет пользователя",
         "destinationId" : "3",
-        "id" : "9",
-        "linkedRelationshipId" : "8",
-        "sourceId" : "1"
+        "id" : "18",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "REST/HTTPS"
+      }, {
+        "description" : "Создаёт папку, получает список папок, удаляет папку",
+        "destinationId" : "4",
+        "id" : "19",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "REST/HTTPS"
+      }, {
+        "description" : "Загружает файл, получает файл по имени, удаляет файл",
+        "destinationId" : "5",
+        "id" : "20",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "REST/HTTPS"
       } ],
-      "tags" : "Element,Person,Customer"
+      "tags" : "Element,Person"
     } ],
     "softwareSystems" : [ {
-      "description" : "Handles authentication and authorization",
+      "containers" : [ {
+        "description" : "Создание пользователя, поиск по логину, поиск по имени и фамилии",
+        "documentation" : { },
+        "id" : "3",
+        "name" : "User Service",
+        "properties" : {
+          "structurizr.dsl.identifier" : "filestoragesystem.userservice"
+        },
+        "relationships" : [ {
+          "description" : "Сохраняет/ищет данные пользователей",
+          "destinationId" : "13",
+          "id" : "14",
+          "sourceId" : "3",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        }, {
+          "description" : "Результаты поиска/создания пользователя",
+          "destinationId" : "1",
+          "id" : "21",
+          "sourceId" : "3",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Python FastAPI"
+      }, {
+        "description" : "Создание папок, получение списка всех папок, удаление папок",
+        "documentation" : { },
+        "id" : "4",
+        "name" : "Folder Service",
+        "properties" : {
+          "structurizr.dsl.identifier" : "filestoragesystem.folderservice"
+        },
+        "relationships" : [ {
+          "description" : "Сохраняет/ищет информацию о папках",
+          "destinationId" : "13",
+          "id" : "15",
+          "sourceId" : "4",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        }, {
+          "description" : "Результаты создания/удаления папки",
+          "destinationId" : "1",
+          "id" : "23",
+          "sourceId" : "4",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Python FastAPI"
+      }, {
+        "components" : [ {
+          "description" : "Обрабатывает входящие REST-запросы, связанные с файлами, и перенаправляет их",
+          "documentation" : { },
+          "id" : "6",
+          "name" : "File API Router",
+          "properties" : {
+            "structurizr.dsl.identifier" : "filestoragesystem.fileservice.fileapirouter"
+          },
+          "relationships" : [ {
+            "description" : "Приходит запрос на загрузку файла",
+            "destinationId" : "7",
+            "id" : "10",
+            "sourceId" : "6",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Приходит запрос на получение файла",
+            "destinationId" : "8",
+            "id" : "11",
+            "sourceId" : "6",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Приходит запрос на удаление файла",
+            "destinationId" : "9",
+            "id" : "12",
+            "sourceId" : "6",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "FastAPI Routing"
+        }, {
+          "description" : "Обрабатывает логику загрузки нового файла в указанную папку",
+          "documentation" : { },
+          "id" : "7",
+          "name" : "File Upload Handler",
+          "properties" : {
+            "structurizr.dsl.identifier" : "filestoragesystem.fileservice.fileupload"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Python"
+        }, {
+          "description" : "Обрабатывает логику поиска и получения файла по имени",
+          "documentation" : { },
+          "id" : "8",
+          "name" : "File Retrieval Handler",
+          "properties" : {
+            "structurizr.dsl.identifier" : "filestoragesystem.fileservice.fileretrieval"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Python"
+        }, {
+          "description" : "Обрабатывает удаление файла",
+          "documentation" : { },
+          "id" : "9",
+          "name" : "File Deletion Handler",
+          "properties" : {
+            "structurizr.dsl.identifier" : "filestoragesystem.fileservice.filedeletion"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Python"
+        } ],
+        "description" : "Создание (загрузка) нового файла в указанную папку, получение файла по имени, удаление файла",
+        "documentation" : { },
+        "id" : "5",
+        "name" : "File Service",
+        "properties" : {
+          "structurizr.dsl.identifier" : "filestoragesystem.fileservice"
+        },
+        "relationships" : [ {
+          "description" : "Сохраняет/ищет метаданные файлов",
+          "destinationId" : "13",
+          "id" : "16",
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        }, {
+          "description" : "Результаты создания/получения/удаления файла",
+          "destinationId" : "1",
+          "id" : "24",
+          "sourceId" : "5",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Python FastAPI"
+      }, {
+        "description" : "Хранит информацию о пользователях, папках и файлах",
+        "documentation" : { },
+        "id" : "13",
+        "name" : "Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "filestoragesystem.database"
+        },
+        "tags" : "Element,Container",
+        "technology" : "PostgreSQL"
+      } ],
+      "description" : "Приложение для хранения файлов в папках (аналог Яндекс.Диск)",
       "documentation" : { },
       "id" : "2",
       "location" : "Unspecified",
-      "name" : "Auth Service",
-      "properties" : {
-        "structurizr.dsl.identifier" : "auth_service"
-      },
-      "tags" : "Element,Software System,ExternalSystem"
-    }, {
-      "containers" : [ {
-        "description" : "Manages user accounts and authentication requests",
-        "documentation" : { },
-        "group" : "Core Services",
-        "id" : "4",
-        "name" : "User API",
-        "properties" : {
-          "structurizr.dsl.identifier" : "user_api"
-        },
-        "relationships" : [ {
-          "description" : "Authenticates user",
-          "destinationId" : "2",
-          "id" : "10",
-          "sourceId" : "4",
-          "tags" : "Relationship",
-          "technology" : "REST API"
-        }, {
-          "description" : "Stores user and metadata",
-          "destinationId" : "6",
-          "id" : "12",
-          "sourceId" : "4",
-          "tags" : "Relationship",
-          "technology" : "SQL"
-        }, {
-          "description" : "Requests file operations",
-          "destinationId" : "5",
-          "id" : "13",
-          "sourceId" : "4",
-          "tags" : "Relationship",
-          "technology" : "REST API"
-        } ],
-        "tags" : "Element,Container",
-        "technology" : "GoLang"
-      }, {
-        "description" : "Handles file and folder operations",
-        "documentation" : { },
-        "group" : "Core Services",
-        "id" : "5",
-        "name" : "Storage Service",
-        "properties" : {
-          "structurizr.dsl.identifier" : "storage_service"
-        },
-        "relationships" : [ {
-          "description" : "Manages file metadata",
-          "destinationId" : "6",
-          "id" : "14",
-          "sourceId" : "5",
-          "tags" : "Relationship",
-          "technology" : "SQL"
-        }, {
-          "description" : "Stores and retrieves file contents",
-          "destinationId" : "7",
-          "id" : "15",
-          "sourceId" : "5",
-          "tags" : "Relationship",
-          "technology" : "REST API"
-        } ],
-        "tags" : "Element,Container",
-        "technology" : "GoLang"
-      }, {
-        "description" : "Stores users, files, and folder metadata",
-        "documentation" : { },
-        "group" : "Core Services",
-        "id" : "6",
-        "name" : "Database",
-        "properties" : {
-          "structurizr.dsl.identifier" : "database"
-        },
-        "tags" : "Element,Container,Database",
-        "technology" : "PostgreSQL"
-      }, {
-        "description" : "Stores actual file contents",
-        "documentation" : { },
-        "group" : "Core Services",
-        "id" : "7",
-        "name" : "Object Storage",
-        "properties" : {
-          "structurizr.dsl.identifier" : "object_storage"
-        },
-        "tags" : "Element,Container,ExternalSystem",
-        "technology" : "S3-compatible Storage"
-      } ],
-      "description" : "Handles file storage and user management",
-      "documentation" : { },
-      "id" : "3",
-      "location" : "Unspecified",
       "name" : "File Storage System",
       "properties" : {
-        "structurizr.dsl.identifier" : "file_storage_system"
+        "structurizr.dsl.identifier" : "filestoragesystem"
       },
       "relationships" : [ {
-        "description" : "Authenticates user",
-        "destinationId" : "2",
-        "id" : "11",
-        "linkedRelationshipId" : "10",
-        "sourceId" : "3",
-        "technology" : "REST API"
+        "description" : "Результаты поиска/создания пользователя",
+        "destinationId" : "1",
+        "id" : "22",
+        "linkedRelationshipId" : "21",
+        "sourceId" : "2"
       } ],
       "tags" : "Element,Software System"
     } ]
   },
-  "name" : "File Storage System",
+  "name" : "Хранилище файлов",
   "properties" : {
-    "structurizr.dsl" : "d29ya3NwYWNlIHsKICAgIG5hbWUgIkZpbGUgU3RvcmFnZSBTeXN0ZW0iCiAgICBkZXNjcmlwdGlvbiAiQXJjaGl0ZWN0dXJlIGZvciBhIGZpbGUgc3RvcmFnZSBzeXN0ZW0gc2ltaWxhciB0byBHb29nbGUgRHJpdmUiCgogICAgbW9kZWwgewogICAgICAgIHVzZXIgPSBwZXJzb24gIlVzZXIiICJTeXN0ZW0gdXNlciB3aG8gdXBsb2FkcyBhbmQgbWFuYWdlcyBmaWxlcyIgewogICAgICAgICAgICB0YWdzICJDdXN0b21lciIKICAgICAgICB9CgogICAgICAgIGF1dGhfc2VydmljZSA9IHNvZnR3YXJlU3lzdGVtICJBdXRoIFNlcnZpY2UiICJIYW5kbGVzIGF1dGhlbnRpY2F0aW9uIGFuZCBhdXRob3JpemF0aW9uIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsU3lzdGVtIgogICAgICAgIH0KCiAgICAgICAgZmlsZV9zdG9yYWdlX3N5c3RlbSA9IHNvZnR3YXJlU3lzdGVtICJGaWxlIFN0b3JhZ2UgU3lzdGVtIiAiSGFuZGxlcyBmaWxlIHN0b3JhZ2UgYW5kIHVzZXIgbWFuYWdlbWVudCIgewogICAgICAgICAgICBncm91cCAiQ29yZSBTZXJ2aWNlcyIgewogICAgICAgICAgICAgICAgdXNlcl9hcGkgPSBjb250YWluZXIgIlVzZXIgQVBJIiAiTWFuYWdlcyB1c2VyIGFjY291bnRzIGFuZCBhdXRoZW50aWNhdGlvbiByZXF1ZXN0cyIgIkdvTGFuZyIgIkNvbnRhaW5lciIKICAgICAgICAgICAgICAgIHN0b3JhZ2Vfc2VydmljZSA9IGNvbnRhaW5lciAiU3RvcmFnZSBTZXJ2aWNlIiAiSGFuZGxlcyBmaWxlIGFuZCBmb2xkZXIgb3BlcmF0aW9ucyIgIkdvTGFuZyIgIkNvbnRhaW5lciIKICAgICAgICAgICAgICAgIGRhdGFiYXNlID0gY29udGFpbmVyICJEYXRhYmFzZSIgIlN0b3JlcyB1c2VycywgZmlsZXMsIGFuZCBmb2xkZXIgbWV0YWRhdGEiICJQb3N0Z3JlU1FMIiAiRGF0YWJhc2UiCiAgICAgICAgICAgICAgICBvYmplY3Rfc3RvcmFnZSA9IGNvbnRhaW5lciAiT2JqZWN0IFN0b3JhZ2UiICJTdG9yZXMgYWN0dWFsIGZpbGUgY29udGVudHMiICJTMy1jb21wYXRpYmxlIFN0b3JhZ2UiICJFeHRlcm5hbFN5c3RlbSIKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgdXNlciAtPiB1c2VyX2FwaSAiQ3JlYXRlcyBhbiBhY2NvdW50LCBtYW5hZ2VzIGZpbGVzIGFuZCBmb2xkZXJzIgogICAgICAgIHVzZXJfYXBpIC0+IGF1dGhfc2VydmljZSAiQXV0aGVudGljYXRlcyB1c2VyIiAiUkVTVCBBUEkiCiAgICAgICAgdXNlcl9hcGkgLT4gZGF0YWJhc2UgIlN0b3JlcyB1c2VyIGFuZCBtZXRhZGF0YSIgIlNRTCIKICAgICAgICB1c2VyX2FwaSAtPiBzdG9yYWdlX3NlcnZpY2UgIlJlcXVlc3RzIGZpbGUgb3BlcmF0aW9ucyIgIlJFU1QgQVBJIgogICAgICAgIHN0b3JhZ2Vfc2VydmljZSAtPiBkYXRhYmFzZSAiTWFuYWdlcyBmaWxlIG1ldGFkYXRhIiAiU1FMIgogICAgICAgIHN0b3JhZ2Vfc2VydmljZSAtPiBvYmplY3Rfc3RvcmFnZSAiU3RvcmVzIGFuZCByZXRyaWV2ZXMgZmlsZSBjb250ZW50cyIgIlJFU1QgQVBJIgogICAgfQoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1Db250ZXh0IGZpbGVfc3RvcmFnZV9zeXN0ZW0gIkNvbnRleHQiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGF1dG9MYXlvdXQKICAgICAgICB9CgogICAgICAgIGNvbnRhaW5lciBmaWxlX3N0b3JhZ2Vfc3lzdGVtICJDb250YWluZXJzIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvTGF5b3V0CiAgICAgICAgfQoKICAgICAgICBjb21wb25lbnQgc3RvcmFnZV9zZXJ2aWNlICJTdG9yYWdlLVNlcnZpY2UtQ29tcG9uZW50cyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b0xheW91dAogICAgICAgIH0KCiAgICAgICAgc3R5bGVzIHsKICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBjb2xvciAjZmZmZmZmCiAgICAgICAgICAgICAgICBmb250U2l6ZSAyMgogICAgICAgICAgICAgICAgc2hhcGUgUGVyc29uCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiQ29udGFpbmVyIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM0MzhkZDUKICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgQ3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJFeHRlcm5hbFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjYzBjMGMwCiAgICAgICAgICAgICAgICBjb2xvciAjZmZmZmZmCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="
+    "structurizr.dsl" : "d29ya3NwYWNlIHsKICAgIG5hbWUgItCl0YDQsNC90LjQu9C40YnQtSDRhNCw0LnQu9C+0LIiCiAgICAhaWRlbnRpZmllcnMgaGllcmFyY2hpY2FsCgogICAgbW9kZWwgewogICAgICAgIC8vIC0tLSBDMTog0KPRgNC+0LLQtdC90Ywg0LrQvtC90YLQtdC60YHRgtCwIC0tLQoKICAgICAgICAvLyDQoNC+0LvRjCDQv9C+0LvRjNC30L7QstCw0YLQtdC70Y8KICAgICAgICB1c2VyID0gcGVyc29uICLQn9C+0LvRjNC30L7QstCw0YLQtdC70YwiICLQl9Cw0LPRgNGD0LbQsNC10YIsINGD0LTQsNC70Y/QtdGCLCDQuNGJ0LXRgiDRhNCw0LnQu9GLINC4INGD0L/RgNCw0LLQu9GP0LXRgiDQv9Cw0L/QutCw0LzQuCIKCiAgICAgICAgLy8g0J7RgdC90L7QstC90LDRjyDRgdC40YHRgtC10LzQsAogICAgICAgIGZpbGVTdG9yYWdlU3lzdGVtID0gc29mdHdhcmVTeXN0ZW0gIkZpbGUgU3RvcmFnZSBTeXN0ZW0iICLQn9GA0LjQu9C+0LbQtdC90LjQtSDQtNC70Y8g0YXRgNCw0L3QtdC90LjRjyDRhNCw0LnQu9C+0LIg0LIg0L/QsNC/0LrQsNGFICjQsNC90LDQu9C+0LMg0K/QvdC00LXQutGBLtCU0LjRgdC6KSIgewoKICAgICAgICAgICAgLy8gLS0tIEMyOiDQo9GA0L7QstC10L3RjCDQutC+0L3RgtC10LnQvdC10YDQvtCyIC0tLQoKICAgICAgICAgICAgLy8g0JrQvtC90YLQtdC50L3QtdGAINGD0L/RgNCw0LLQu9C10L3QuNGPINC/0L7Qu9GM0LfQvtCy0LDRgtC10LvRj9C80LgKICAgICAgICAgICAgdXNlclNlcnZpY2UgPSBjb250YWluZXIgIlVzZXIgU2VydmljZSIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gItCh0L7Qt9C00LDQvdC40LUg0L/QvtC70YzQt9C+0LLQsNGC0LXQu9GPLCDQv9C+0LjRgdC6INC/0L4g0LvQvtCz0LjQvdGDLCDQv9C+0LjRgdC6INC/0L4g0LjQvNC10L3QuCDQuCDRhNCw0LzQuNC70LjQuCIKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIlB5dGhvbiBGYXN0QVBJIgogICAgICAgICAgICB9CgogICAgICAgICAgICAvLyDQmtC+0L3RgtC10LnQvdC10YAg0YPQv9GA0LDQstC70LXQvdC40Y8g0L/QsNC/0LrQsNC80LgKICAgICAgICAgICAgZm9sZGVyU2VydmljZSA9IGNvbnRhaW5lciAiRm9sZGVyIFNlcnZpY2UiIHsKICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICLQodC+0LfQtNCw0L3QuNC1INC/0LDQv9C+0LosINC/0L7Qu9GD0YfQtdC90LjQtSDRgdC/0LjRgdC60LAg0LLRgdC10YUg0L/QsNC/0L7Quiwg0YPQtNCw0LvQtdC90LjQtSDQv9Cw0L/QvtC6IgogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiUHl0aG9uIEZhc3RBUEkiCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIC8vINCa0L7QvdGC0LXQudC90LXRgCDRg9C/0YDQsNCy0LvQtdC90LjRjyDRhNCw0LnQu9Cw0LzQuAogICAgICAgICAgICBmaWxlU2VydmljZSA9IGNvbnRhaW5lciAiRmlsZSBTZXJ2aWNlIiB7CiAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAi0KHQvtC30LTQsNC90LjQtSAo0LfQsNCz0YDRg9C30LrQsCkg0L3QvtCy0L7Qs9C+INGE0LDQudC70LAg0LIg0YPQutCw0LfQsNC90L3Rg9GOINC/0LDQv9C60YMsINC/0L7Qu9GD0YfQtdC90LjQtSDRhNCw0LnQu9CwINC/0L4g0LjQvNC10L3QuCwg0YPQtNCw0LvQtdC90LjQtSDRhNCw0LnQu9CwIgogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiUHl0aG9uIEZhc3RBUEkiCgogICAgICAgICAgICAgICAgLy8gLS0tIEMzOiDQo9GA0L7QstC10L3RjCDQutC+0LzQv9C+0L3QtdC90YLQvtCyICjQv9GA0LjQvNC10YApIC0tLQogICAgICAgICAgICAgICAgZmlsZUFwaVJvdXRlciA9IGNvbXBvbmVudCAiRmlsZSBBUEkgUm91dGVyIiB7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gItCe0LHRgNCw0LHQsNGC0YvQstCw0LXRgiDQstGF0L7QtNGP0YnQuNC1IFJFU1Qt0LfQsNC/0YDQvtGB0YssINGB0LLRj9C30LDQvdC90YvQtSDRgSDRhNCw0LnQu9Cw0LzQuCwg0Lgg0L/QtdGA0LXQvdCw0L/RgNCw0LLQu9GP0LXRgiDQuNGFIgogICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkZhc3RBUEkgUm91dGluZyIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBmaWxlVXBsb2FkID0gY29tcG9uZW50ICJGaWxlIFVwbG9hZCBIYW5kbGVyIiB7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gItCe0LHRgNCw0LHQsNGC0YvQstCw0LXRgiDQu9C+0LPQuNC60YMg0LfQsNCz0YDRg9C30LrQuCDQvdC+0LLQvtCz0L4g0YTQsNC50LvQsCDQsiDRg9C60LDQt9Cw0L3QvdGD0Y4g0L/QsNC/0LrRgyIKICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJQeXRob24iCiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgZmlsZVJldHJpZXZhbCA9IGNvbXBvbmVudCAiRmlsZSBSZXRyaWV2YWwgSGFuZGxlciIgewogICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICLQntCx0YDQsNCx0LDRgtGL0LLQsNC10YIg0LvQvtCz0LjQutGDINC/0L7QuNGB0LrQsCDQuCDQv9C+0LvRg9GH0LXQvdC40Y8g0YTQsNC50LvQsCDQv9C+INC40LzQtdC90LgiCiAgICAgICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiUHl0aG9uIgogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIGZpbGVEZWxldGlvbiA9IGNvbXBvbmVudCAiRmlsZSBEZWxldGlvbiBIYW5kbGVyIiB7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gItCe0LHRgNCw0LHQsNGC0YvQstCw0LXRgiDRg9C00LDQu9C10L3QuNC1INGE0LDQudC70LAiCiAgICAgICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiUHl0aG9uIgogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIC8vINCf0YDQuNC80LXRgCDRgdCy0Y/Qt9C10Lkg0LzQtdC20LTRgyDQutC+0LzQv9C+0L3QtdC90YLQsNC80Lgg0LLQvdGD0YLRgNC4INC60L7QvdGC0LXQudC90LXRgNCwCiAgICAgICAgICAgICAgICBmaWxlQXBpUm91dGVyIC0+IGZpbGVVcGxvYWQgItCf0YDQuNGF0L7QtNC40YIg0LfQsNC/0YDQvtGBINC90LAg0LfQsNCz0YDRg9C30LrRgyDRhNCw0LnQu9CwIgogICAgICAgICAgICAgICAgZmlsZUFwaVJvdXRlciAtPiBmaWxlUmV0cmlldmFsICLQn9GA0LjRhdC+0LTQuNGCINC30LDQv9GA0L7RgSDQvdCwINC/0L7Qu9GD0YfQtdC90LjQtSDRhNCw0LnQu9CwIgogICAgICAgICAgICAgICAgZmlsZUFwaVJvdXRlciAtPiBmaWxlRGVsZXRpb24gItCf0YDQuNGF0L7QtNC40YIg0LfQsNC/0YDQvtGBINC90LAg0YPQtNCw0LvQtdC90LjQtSDRhNCw0LnQu9CwIgogICAgICAgICAgICB9CgogICAgICAgICAgICAvLyDQmtC+0L3RgtC10LnQvdC10YAg0LHQsNC30Ysg0LTQsNC90L3Ri9GFCiAgICAgICAgICAgIGRhdGFiYXNlID0gY29udGFpbmVyICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gItCl0YDQsNC90LjRgiDQuNC90YTQvtGA0LzQsNGG0LjRjiDQviDQv9C+0LvRjNC30L7QstCw0YLQtdC70Y/RhSwg0L/QsNC/0LrQsNGFINC4INGE0LDQudC70LDRhSIKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIlBvc3RncmVTUUwiCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIC8vINCS0LfQsNC40LzQvtC00LXQudGB0YLQstC40Y8g0LzQtdC20LTRgyDQutC+0L3RgtC10LnQvdC10YDQsNC80LggKEMyKQogICAgICAgICAgICB1c2VyU2VydmljZSAtPiBkYXRhYmFzZSAi0KHQvtGF0YDQsNC90Y/QtdGCL9C40YnQtdGCINC00LDQvdC90YvQtSDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuSIgIlNRTCIKICAgICAgICAgICAgZm9sZGVyU2VydmljZSAtPiBkYXRhYmFzZSAi0KHQvtGF0YDQsNC90Y/QtdGCL9C40YnQtdGCINC40L3RhNC+0YDQvNCw0YbQuNGOINC+INC/0LDQv9C60LDRhSIgIlNRTCIKICAgICAgICAgICAgZmlsZVNlcnZpY2UgLT4gZGF0YWJhc2UgItCh0L7RhdGA0LDQvdGP0LXRgi/QuNGJ0LXRgiDQvNC10YLQsNC00LDQvdC90YvQtSDRhNCw0LnQu9C+0LIiICJTUUwiCiAgICAgICAgfQoKICAgICAgICAvLyDQktC30LDQuNC80L7QtNC10LnRgdGC0LLQuNGPINC90LAg0YPRgNC+0LLQvdC1INCy0YHQtdC5INGB0LjRgdGC0LXQvNGLCiAgICAgICAgdXNlciAtPiBmaWxlU3RvcmFnZVN5c3RlbSAi0JjRgdC/0L7Qu9GM0LfRg9C10YIg0LLQtdCxL9C80L7QsdC40LvRjNC90YvQuSDQuNC90YLQtdGA0YTQtdC50YEg0LTQu9GPINGA0LDQsdC+0YLRiyDRgSDRhNCw0LnQu9Cw0LzQuCDQuCDQv9Cw0L/QutCw0LzQuCIgIlJFU1QvSFRUUFMiCgogICAgICAgIC8vINCU0LvRjyDQtNC40L3QsNC80LjRh9C10YHQutC+0Lkg0LTQuNCw0LPRgNCw0LzQvNGLINC90LXQvtCx0YXQvtC00LjQvNC+INC+0LHRitGP0LLQuNGC0Ywg0LLRgdC1INC90YPQttC90YvQtSDRgdCy0Y/Qt9C4ICjQutC+0YLQvtGA0YvQtSDRgtCw0Lwg0LHRg9C00YPRgiDQt9Cw0LTQtdC50YHRgtCy0L7QstCw0L3RiykKICAgICAgICB1c2VyIC0+IGZpbGVTdG9yYWdlU3lzdGVtLnVzZXJTZXJ2aWNlICLQodC+0LfQtNCw0ZHRgiDQuNC70Lgg0LjRidC10YIg0L/QvtC70YzQt9C+0LLQsNGC0LXQu9GPIiAiUkVTVC9IVFRQUyIKICAgICAgICB1c2VyIC0+IGZpbGVTdG9yYWdlU3lzdGVtLmZvbGRlclNlcnZpY2UgItCh0L7Qt9C00LDRkdGCINC/0LDQv9C60YMsINC/0L7Qu9GD0YfQsNC10YIg0YHQv9C40YHQvtC6INC/0LDQv9C+0LosINGD0LTQsNC70Y/QtdGCINC/0LDQv9C60YMiICJSRVNUL0hUVFBTIgogICAgICAgIHVzZXIgLT4gZmlsZVN0b3JhZ2VTeXN0ZW0uZmlsZVNlcnZpY2UgItCX0LDQs9GA0YPQttCw0LXRgiDRhNCw0LnQuywg0L/QvtC70YPRh9Cw0LXRgiDRhNCw0LnQuyDQv9C+INC40LzQtdC90LgsINGD0LTQsNC70Y/QtdGCINGE0LDQudC7IiAiUkVTVC9IVFRQUyIKCiAgICAgICAgLy8g0KHQstGP0LfQuCDQvNC10LbQtNGDINGB0LXRgNCy0LjRgdCw0LzQuCAo0LXRgdC70Lgg0L7QtNC40L0g0YHQtdGA0LLQuNGBINC+0LHRgNCw0YnQsNC10YLRgdGPINC6INC00YDRg9Cz0L7QvNGDKQogICAgICAgIC8vINCf0YDQuCDQvdC10L7QsdGF0L7QtNC40LzQvtGB0YLQuCDQvNC+0LbQvdC+INC00L7QsdCw0LLQuNGC0YwgKNCyINC00LDQvdC90L7QvCDRgdC70YPRh9Cw0LUg0LzQvtC20L3QviDRgdGH0LjRgtCw0YLRjCwg0YfRgtC+INC90LDQv9GA0Y/QvNGD0Y4g0L3QtSDQvtCx0YDQsNGJ0LDRjtGC0YHRjykKICAgICAgICAvLyBmaWxlU3RvcmFnZVN5c3RlbS5mb2xkZXJTZXJ2aWNlIC0+IGZpbGVTdG9yYWdlU3lzdGVtLmZpbGVTZXJ2aWNlICLQnNC+0LbQtdGCINC30LDQv9GA0LDRiNC40LLQsNGC0Ywg0LjQvdGE0L7RgNC80LDRhtC40Y4g0L4g0YTQsNC50LvQsNGFIiAiUkVTVCBBUEkiICjQv9GA0LjQvNC10YApCiAgICAgICAgLy8g0J7QsdGA0LDRgtC90YvQtSDRgdCy0Y/Qt9C4INC6INC/0L7Qu9GM0LfQvtCy0LDRgtC10LvRjiwg0LXRgdC70Lgg0YHQtdGA0LLQuNGBINC90LDQv9GA0Y/QvNGD0Y4g0LLQvtC30LLRgNCw0YnQsNC10YIg0L7RgtCy0LXRggogICAgICAgIGZpbGVTdG9yYWdlU3lzdGVtLnVzZXJTZXJ2aWNlIC0+IHVzZXIgItCg0LXQt9GD0LvRjNGC0LDRgtGLINC/0L7QuNGB0LrQsC/RgdC+0LfQtNCw0L3QuNGPINC/0L7Qu9GM0LfQvtCy0LDRgtC10LvRjyIKICAgICAgICBmaWxlU3RvcmFnZVN5c3RlbS5mb2xkZXJTZXJ2aWNlIC0+IHVzZXIgItCg0LXQt9GD0LvRjNGC0LDRgtGLINGB0L7Qt9C00LDQvdC40Y8v0YPQtNCw0LvQtdC90LjRjyDQv9Cw0L/QutC4IgogICAgICAgIGZpbGVTdG9yYWdlU3lzdGVtLmZpbGVTZXJ2aWNlIC0+IHVzZXIgItCg0LXQt9GD0LvRjNGC0LDRgtGLINGB0L7Qt9C00LDQvdC40Y8v0L/QvtC70YPRh9C10L3QuNGPL9GD0LTQsNC70LXQvdC40Y8g0YTQsNC50LvQsCIKICAgIH0KCiAgICB2aWV3cyB7CiAgICAgICAgLy8gLS0tIEMxOiDQlNC40LDQs9GA0LDQvNC80LAg0LrQvtC90YLQtdC60YHRgtCwINGB0LjRgdGC0LXQvNGLIC0tLQogICAgICAgIHN5c3RlbUNvbnRleHQgZmlsZVN0b3JhZ2VTeXN0ZW0gIlN5c3RlbUNvbnRleHQiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICB9CgogICAgICAgIC8vIC0tLSBDMjog0JTQuNCw0LPRgNCw0LzQvNCwINC60L7QvdGC0LXQudC90LXRgNC+0LIgLS0tCiAgICAgICAgY29udGFpbmVyIGZpbGVTdG9yYWdlU3lzdGVtICJDb250YWluZXJWaWV3IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICAvLyAtLS0gQzM6INCU0LjQsNCz0YDQsNC80LzQsCDQutC+0LzQv9C+0L3QtdC90YLQvtCyINC00LvRjyBGaWxlIFNlcnZpY2UgLS0tCiAgICAgICAgY29tcG9uZW50IGZpbGVTdG9yYWdlU3lzdGVtLmZpbGVTZXJ2aWNlICJGaWxlU2VydmljZUNvbXBvbmVudHMiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICB9CgogICAgICAgIC8vINCf0YDQuNC80LXRgCDQtNC40L3QsNC80LjRh9C10YHQutC+0Lkg0LTQuNCw0LPRgNCw0LzQvNGLOiDRgdC+0LfQtNCw0L3QuNC1ICjQt9Cw0LPRgNGD0LfQutCwKSDQvdC+0LLQvtCz0L4g0YTQsNC50LvQsAogICAgICAgIGR5bmFtaWMgZmlsZVN0b3JhZ2VTeXN0ZW0gIkNyZWF0ZUZpbGUiICLQodGG0LXQvdCw0YDQuNC5OiDQt9Cw0LPRgNGD0LfQutCwINC90L7QstC+0LPQviDRhNCw0LnQu9CwINCyINC/0LDQv9C60YMiIHsKICAgICAgICAgICAgdXNlciAtPiBmaWxlU3RvcmFnZVN5c3RlbS51c2VyU2VydmljZSAi0J/RgNC+0LLQtdGA0LrQsCDQuCDQsNGD0YLQtdC90YLQuNGE0LjQutCw0YbQuNGPINC/0L7Qu9GM0LfQvtCy0LDRgtC10LvRjyAo0L/RgNC4INC90LXQvtCx0YXQvtC00LjQvNC+0YHRgtC4KSIKICAgICAgICAgICAgdXNlciAtPiBmaWxlU3RvcmFnZVN5c3RlbS5mb2xkZXJTZXJ2aWNlICLQo9GC0L7Rh9C90Y/QtdGCLCDRh9GC0L4g0L/QsNC/0LrQsCDRgdGD0YnQtdGB0YLQstGD0LXRgiDQuNC70Lgg0YHQvtC30LTQsNGR0YIg0L/QsNC/0LrRgyIKICAgICAgICAgICAgdXNlciAtPiBmaWxlU3RvcmFnZVN5c3RlbS5maWxlU2VydmljZSAi0J7RgtC/0YDQsNCy0LvRj9C10YIg0LfQsNC/0YDQvtGBINC90LAg0LfQsNCz0YDRg9C30LrRgyDRhNCw0LnQu9CwIgogICAgICAgICAgICBmaWxlU3RvcmFnZVN5c3RlbS5maWxlU2VydmljZSAtPiBmaWxlU3RvcmFnZVN5c3RlbS5kYXRhYmFzZSAi0KHQvtGF0YDQsNC90Y/QtdGCINC80LXRgtCw0LTQsNC90L3Ri9C1INC+INGE0LDQudC70LUiCiAgICAgICAgICAgIGZpbGVTdG9yYWdlU3lzdGVtLmRhdGFiYXNlIC0+IGZpbGVTdG9yYWdlU3lzdGVtLmZpbGVTZXJ2aWNlICLQn9C+0LTRgtCy0LXRgNC20LTQtdC90LjQtTog0LTQsNC90L3Ri9C1INC+INGE0LDQudC70LUg0YHQvtGF0YDQsNC90LXQvdGLIgogICAgICAgICAgICBmaWxlU3RvcmFnZVN5c3RlbS5maWxlU2VydmljZSAtPiB1c2VyICLQktC+0LfQstGA0LDRidCw0LXRgiDQvtGC0LLQtdGCOiDRhNCw0LnQuyDQt9Cw0LPRgNGD0LbQtdC9IgogICAgICAgIH0KICAgIH0KfQ=="
   },
   "views" : {
     "componentViews" : [ {
@@ -152,133 +217,214 @@
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
-        "rankDirection" : "TopBottom",
+        "rankDirection" : "LeftRight",
         "rankSeparation" : 300,
         "vertices" : false
       },
       "containerId" : "5",
+      "elements" : [ {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      } ],
       "externalContainerBoundariesVisible" : false,
-      "key" : "Storage-Service-Components",
-      "order" : 3
+      "key" : "FileServiceComponents",
+      "order" : 3,
+      "relationships" : [ {
+        "id" : "10"
+      }, {
+        "id" : "11"
+      }, {
+        "id" : "12"
+      } ]
     } ],
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Containers",
-      "metadataSymbols" : "SquareBrackets",
-      "styles" : {
-        "elements" : [ {
-          "color" : "#ffffff",
-          "fontSize" : 22,
-          "shape" : "Person",
-          "tag" : "Person"
-        }, {
-          "background" : "#438dd5",
-          "color" : "#ffffff",
-          "tag" : "Container"
-        }, {
-          "shape" : "Cylinder",
-          "tag" : "Database"
-        }, {
-          "background" : "#c0c0c0",
-          "color" : "#ffffff",
-          "tag" : "ExternalSystem"
-        } ]
-      },
+      "lastSavedView" : "FileServiceComponents",
+      "styles" : { },
       "terminology" : { }
     },
     "containerViews" : [ {
       "automaticLayout" : {
-        "applied" : true,
+        "applied" : false,
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
-        "rankDirection" : "TopBottom",
+        "rankDirection" : "LeftRight",
         "rankSeparation" : 300,
         "vertices" : false
       },
-      "dimensions" : {
-        "height" : 2765,
-        "width" : 2402
-      },
       "elements" : [ {
         "id" : "1",
-        "x" : 1014,
-        "y" : 165
+        "x" : 0,
+        "y" : 0
       }, {
-        "id" : "2",
-        "x" : 1751,
-        "y" : 1465
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "4",
-        "x" : 989,
-        "y" : 865
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "5",
-        "x" : 460,
-        "y" : 1465
+        "x" : 0,
+        "y" : 0
       }, {
-        "id" : "6",
-        "x" : 989,
-        "y" : 2065
-      }, {
-        "id" : "7",
-        "x" : 239,
-        "y" : 2065
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
-      "key" : "Containers",
+      "key" : "ContainerView",
       "order" : 2,
       "relationships" : [ {
-        "id" : "10"
-      }, {
-        "id" : "12"
-      }, {
-        "id" : "13"
-      }, {
         "id" : "14"
       }, {
         "id" : "15"
       }, {
-        "id" : "8"
+        "id" : "16"
+      }, {
+        "id" : "18"
+      }, {
+        "id" : "19"
+      }, {
+        "id" : "20"
+      }, {
+        "id" : "21"
+      }, {
+        "id" : "23"
+      }, {
+        "id" : "24"
       } ],
-      "softwareSystemId" : "3"
+      "softwareSystemId" : "2"
+    } ],
+    "dynamicViews" : [ {
+      "description" : "Сценарий: загрузка нового файла в папку",
+      "dimensions" : {
+        "height" : 2020,
+        "width" : 2666
+      },
+      "elementId" : "2",
+      "elements" : [ {
+        "id" : "1",
+        "x" : 733,
+        "y" : 208
+      }, {
+        "id" : "3",
+        "x" : 1108,
+        "y" : 808
+      }, {
+        "id" : "4",
+        "x" : 358,
+        "y" : 808
+      }, {
+        "id" : "5",
+        "x" : 1858,
+        "y" : 1408
+      }, {
+        "id" : "13",
+        "x" : 1858,
+        "y" : 808
+      } ],
+      "externalBoundariesVisible" : false,
+      "key" : "CreateFile",
+      "order" : 4,
+      "paperSize" : "A4_Landscape",
+      "relationships" : [ {
+        "description" : "Проверка и аутентификация пользователя (при необходимости)",
+        "id" : "18",
+        "order" : "1",
+        "response" : false
+      }, {
+        "description" : "Уточняет, что папка существует или создаёт папку",
+        "id" : "19",
+        "order" : "2",
+        "response" : false
+      }, {
+        "description" : "Отправляет запрос на загрузку файла",
+        "id" : "20",
+        "order" : "3",
+        "response" : false,
+        "vertices" : [ {
+          "x" : 2458,
+          "y" : 704
+        }, {
+          "x" : 2458,
+          "y" : 1108
+        } ]
+      }, {
+        "description" : "Сохраняет метаданные о файле",
+        "id" : "16",
+        "order" : "4",
+        "response" : false,
+        "vertices" : [ {
+          "x" : 2233,
+          "y" : 1258
+        } ]
+      }, {
+        "description" : "Подтверждение: данные о файле сохранены",
+        "id" : "16",
+        "order" : "5",
+        "response" : true,
+        "vertices" : [ {
+          "x" : 1933,
+          "y" : 1258
+        } ]
+      }, {
+        "description" : "Возвращает ответ: файл загружен",
+        "id" : "24",
+        "order" : "6",
+        "response" : false,
+        "vertices" : [ {
+          "x" : 208,
+          "y" : 1108
+        }, {
+          "x" : 208,
+          "y" : 704
+        } ]
+      } ]
     } ],
     "systemContextViews" : [ {
       "automaticLayout" : {
-        "applied" : true,
+        "applied" : false,
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
-        "rankDirection" : "TopBottom",
+        "rankDirection" : "LeftRight",
         "rankSeparation" : 300,
         "vertices" : false
       },
-      "dimensions" : {
-        "height" : 2000,
-        "width" : 850
-      },
       "elements" : [ {
         "id" : "1",
-        "x" : 225,
-        "y" : 165
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "2",
-        "x" : 200,
-        "y" : 1465
-      }, {
-        "id" : "3",
-        "x" : 200,
-        "y" : 865
+        "x" : 0,
+        "y" : 0
       } ],
       "enterpriseBoundaryVisible" : true,
-      "key" : "Context",
+      "key" : "SystemContext",
       "order" : 1,
       "relationships" : [ {
-        "id" : "11"
+        "id" : "17"
       }, {
-        "id" : "9"
+        "id" : "22"
       } ],
-      "softwareSystemId" : "3"
+      "softwareSystemId" : "2"
     } ]
   }
 }
