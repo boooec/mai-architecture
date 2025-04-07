@@ -1,24 +1,23 @@
 from typing import Optional, List
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models import User
 from app.repositories.user_repository import UserRepository
 
 
 class UserService:
-    """
-    Бизнес-логика работы с пользователями.
-    """
-
     def __init__(self, repo: UserRepository):
         self.repo = repo
 
-    def register_user(self, login: str, password: str, first_name: str, last_name: str) -> User:
-        existing = self.repo.get_by_login(login)
+    async def register_user(self, session: AsyncSession, login: str, password: str, first_name: str, last_name: str,) -> User:
+        existing = await self.repo.get_by_login(session, login)
         if existing:
             raise ValueError(f"Login '{login}' is already taken")
-        return self.repo.create_user(login, password, first_name, last_name)
+        return await self.repo.create_user(session, login, password, first_name, last_name)
 
-    def get_user_by_login(self, login: str) -> Optional[User]:
-        return self.repo.get_by_login(login)
+    async def get_user_by_login(self, session: AsyncSession, login: str) -> Optional[User]:
+        return await self.repo.get_by_login(session, login)
 
-    def find_users_by_name(self, first_name: str, last_name: str) -> List[User]:
-        return self.repo.find_by_name(first_name, last_name)
+    async def find_users_by_name(self, session: AsyncSession, first_name: str, last_name: str) -> List[User]:
+        return await self.repo.find_by_name(session, first_name, last_name)

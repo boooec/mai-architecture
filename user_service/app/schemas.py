@@ -16,11 +16,9 @@ class UserResponse(BaseModel):
     """
     Схема для ответа.
     """
-
-    user_id: int
+    id: int
     login: str
-    first_name: str
-    last_name: str
+    full_name: str
 
     class Config:
         from_attributes = True

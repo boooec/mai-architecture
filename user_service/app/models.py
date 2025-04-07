@@ -1,28 +1,22 @@
-from typing import Dict
+from sqlalchemy import MetaData, String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
-class User:
-    """
-    Упрощенная модель пользователя.
-    """
+class Base(DeclarativeBase):
+    __abstract__ = True
+    metadata = MetaData(naming_convention={
+        "ix": "ix_%(column_0_label)s",
+        "uq": "uq_%(table_name)s_%(column_0_N_name)s",
+        "ck": "ck_%(table_name)s_%(constraint_name)s",
+        "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+        "pk": "pk_%(table_name)s",
+    })
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    def __init__(self, user_id: int, login: str, password: str, first_name: str, last_name: str):
-        self.user_id = user_id
-        self.login = login
-        self.password = password
-        self.first_name = first_name
-        self.last_name = last_name
 
-    def __repr__(self):
-        return f"User(id={self.user_id}, login={self.login})"
+class User(Base):
+    __tablename__ = "users"
 
-    def dict(self) -> Dict:
-        """
-        Возвращает представление пользователя в виде словаря.
-        """
-        return {
-            "user_id": self.user_id,
-            "login": self.login,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-        }
+    full_name: Mapped[str] = mapped_column(String(200), index=True)
+    login: Mapped[str] = mapped_column(String(200), unique=True, index=True)
+    hashed_password: Mapped[str] = mapped_column(String(200))
