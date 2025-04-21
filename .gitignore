@@ -1,3 +1,5 @@
-task1/images
-task1/.structuzir
-task1/workspace.json
+images
+.structurizr
+workspace.json
+__pycache__
+.venv
