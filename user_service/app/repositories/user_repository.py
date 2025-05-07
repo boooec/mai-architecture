@@ -39,3 +39,12 @@ class UserRepository:
             stmt = stmt.where(User.full_name.ilike(f"% {last_name}"))
         result = await session.execute(stmt)
         return result.scalars().all()
+
+    @staticmethod
+    async def update_user(session: AsyncSession, user: User, full_name: Optional[str] = None) -> User:
+        if full_name:
+            user.full_name = full_name
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
+        return user

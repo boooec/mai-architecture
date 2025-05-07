@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_async_session
-from app.schemas import UserCreateRequest, UserResponse
+from app.schemas import UserCreateRequest, UserResponse, UserUpdateRequest
 from app.services.user_service import UserService
 from app.repositories.user_repository import UserRepository
 from app.auth import verify_token
@@ -61,3 +61,22 @@ async def search_users(
         session, first_name or "", last_name or ""
     )
     return [UserResponse.model_validate(u) for u in users]
+
+
+@router.patch("/me", response_model=UserResponse)
+async def update_user(
+    payload: UserUpdateRequest,
+    login: str = Depends(verify_token),
+    session: AsyncSession = Depends(get_async_session),
+):
+    try:
+        updated_user = await user_service.update_user_by_login(
+            session=session,
+            login=login,
+            full_name=payload.full_name,
+        )
+        if not updated_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return UserResponse.model_validate(updated_user)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

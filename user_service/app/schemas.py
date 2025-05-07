@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -10,6 +12,10 @@ class UserCreateRequest(BaseModel):
     password: str = Field(..., examples=["secret"])
     first_name: str = Field(..., examples=["John"])
     last_name: str = Field(..., examples=["Doe"])
+
+
+class UserUpdateRequest(BaseModel):
+    full_name: Optional[str] = None
 
 
 class UserResponse(BaseModel):
