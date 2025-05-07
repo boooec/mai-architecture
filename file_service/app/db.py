@@ -1,16 +1,17 @@
-from typing import Dict
-from app.models import FileRecord
+import asyncio
+import os
 
-"""
-Храним файлы (их метаданные и контент) в памяти:
-   file_id -> FileRecord
-"""
+from motor.motor_asyncio import AsyncIOMotorClient
 
-fake_files_db: Dict[int, FileRecord] = {}
-fake_file_id_seq = 0
+MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://mongo_db:27017")
+MONGODB_DB = os.getenv("MONGODB_DB", "files_db")
+
+client = AsyncIOMotorClient(MONGODB_URL)
+db = client[MONGODB_DB]
 
 
-def get_next_file_id() -> int:
-    global fake_file_id_seq
-    fake_file_id_seq += 1
-    return fake_file_id_seq
+async def ensure_indexes():
+    col = db.files_db
+    await col.create_index("file_id")
+    await col.create_index("folder_id")
+    await col.create_index("filename")
